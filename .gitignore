@@ -1,0 +1,57 @@
+# Terraform generated files
+.terraform/                     # Terraform's working directory for plugins, modules, etc.
+*.tfplan                        # Terraform plan files (can contain sensitive info)
+*.tfstate                       # Terraform state files (HIGHLY SENSITIVE - NEVER COMMIT TO GIT!)
+*.tfstate.backup                # Terraform state backup files
+.terraform.lock.hcl             # Terraform dependency lock file (often committed, but can be ignored if not strictly managed)
+# If you decide to ignore .terraform.lock.hcl, uncomment the line below:
+# .terraform.lock.hcl
+
+# Terraform CLI configuration and crash logs
+.terraformrc                    # Personal Terraform CLI configuration (may contain sensitive tokens)
+crash.log                       # Terraform crash logs
+
+# Cloud-specific credential files and sensitive data (ABSOLUTELY CRITICAL TO IGNORE)
+# These files should NEVER be committed to version control.
+# Use environment variables, a secrets manager (like AWS Secrets Manager, Azure Key Vault, HashiCorp Vault),
+# or a separate, ignored .env file for local development.
+
+# Generic/Common credential patterns
+credentials
+id_rsa
+id_rsa.pub
+token.json
+.aws/credentials                # AWS CLI credentials
+.aws/config                     # AWS CLI configuration (might contain profiles)
+.azure/                         # Azure CLI/credentials related files
+.gcloud/                        # Google Cloud SDK related files
+
+# Sensitive variable files
+# If you use .tfvars files for sensitive variables, explicitly ignore them.
+# Example: `terraform apply -var-file=secret.tfvars`
+*.tfvars                        # Generic .tfvars (if they contain sensitive data)
+*.auto.tfvars                   # Auto-loaded .tfvars (if they contain sensitive data)
+secret.tfvars                   # Common name for sensitive variables
+sensitive.tfvars                # Another common name for sensitive variables
+
+# Environment variable files
+.env                            # Common for local environment variables
+.qodo/                        # Qodo specific environment variables
+# Editor and IDE specific files/directories
+.DS_Store                       # macOS Finder metadata
+.idea/                          # IntelliJ IDEA project files
+.vscode/                        # VS Code project files (can be committed if shared settings are desired)
+*.swp                           # Vim swap files
+*~                              # Backup files created by some text editors
+*.sublime-workspace             # Sublime Text workspace files
+*.sublime-project               # Sublime Text project files
+
+# Compilation/build output directories (if you mix code with Terraform)
+dist/
+build/
+bin/
+node_modules/
+target/
+
+# Log files
+*.log
