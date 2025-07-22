@@ -15,6 +15,7 @@ env:
   ARM_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
   ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
   ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+  ARM_USE_OIDC: true 
 
 jobs:
   terraform-deploy:
@@ -45,11 +46,7 @@ jobs:
             -backend-config="tenant_id=${{ env.ARM_TENANT_ID }}"
 
       - name: 'Terraform Plan'
-        run: terraform plan -out=tfplan \
-            -backend-config="use_oidc=true" \
-            -backend-config="tenant_id=${{ env.ARM_TENANT_ID }}"
+        run: terraform plan -out=tfplan
 
       - name: 'Terraform Apply'
-        run: terraform apply -auto-approve tfplan \
-            -backend-config="use_oidc=true" \
-            -backend-config="tenant_id=${{ env.ARM_TENANT_ID }}"
+        run: terraform apply -auto-approve tfplan
