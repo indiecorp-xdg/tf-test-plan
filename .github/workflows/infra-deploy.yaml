@@ -15,7 +15,6 @@ env:
   ARM_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
   ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
   ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-  # ARM_USE_OIDC: true is automatically set by the azure/login action
 
 jobs:
   terraform-deploy:
@@ -30,7 +29,7 @@ jobs:
       - name: 'Setup Terraform'
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.8.0 # Or your desired version
+          terraform_version: 1.12.2
 
       - name: 'Azure Login'
         uses: azure/login@v1
@@ -40,8 +39,10 @@ jobs:
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
       - name: 'Terraform Init'
-        run: terraform init
-        # The backend configuration from backend.tf will be used here
+        run: |
+          terraform init \
+            -backend-config="use_oidc=true" \
+            -backend-config="tenant_id=${{ env.ARM_TENANT_ID }}"
 
       - name: 'Terraform Plan'
         run: terraform plan -out=tfplan
