@@ -45,10 +45,10 @@ jobs:
           terraform init \
             -backend-config="use_oidc=true" \
             -backend-config="tenant_id=${{ env.ARM_TENANT_ID }}"
-            -backend-config="resource_group_name=tf-store-rg" \
-            -backend-config="storage_account_name=satflabstore" \
-            -backend-config="container_name=satflabstoreblob001" \
-            -backend-config="key=terraform.tfstate"
+            # -backend-config="resource_group_name=tf-store-rg" \
+            # -backend-config="storage_account_name=satflabstore" \
+            # -backend-config="container_name=satflabstoreblob001" \
+            # -backend-config="key=terraform.tfstate"
 
       - name: 'Terraform Plan'
         run: |
