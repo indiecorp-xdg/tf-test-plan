@@ -48,9 +48,9 @@ jobs:
       - name: 'Terraform Plan'
         run: |
           terraform plan \
-            -out=tfplan \
             -var="azure_tenant_id=${{ env.ARM_TENANT_ID }}"
 
       - name: 'Terraform Apply'
         run: |
-          terraform apply
+          terraform apply -auto-approve \
+            -var="azure_tenant_id=${{ env.ARM_TENANT_ID }}"
