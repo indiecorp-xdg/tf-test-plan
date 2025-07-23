@@ -7,4 +7,3 @@ output "vnet_name" {
   description = "The name of the created Virtual Network."
   value       = azurerm_virtual_network.main.name
 }
-

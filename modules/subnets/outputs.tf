@@ -7,3 +7,12 @@ output "subnet_names" {
   description = "A map of the created subnet names (key is the map key from input, value is subnet name)."
   value       = { for name, subnet in azurerm_subnet.main : name => subnet.name }
 }
+
+output "subnet_cidrs" {
+  description = "A map of subnet names to their CIDR prefixes."
+  value = {
+    web_layer = azurerm_subnet.web.address_prefixes[0]
+    app_layer = azurerm_subnet.app.address_prefixes[0]
+    db_layer  = azurerm_subnet.db.address_prefixes[0]
+  }
+}

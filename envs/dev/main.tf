@@ -120,7 +120,7 @@ module "app_nsg" {
       protocol                 = "Tcp"
       source_port_range        = "*"
       destination_port_range   = "8080"
-      source_address_prefix    = module.subnets.subnet_ids["web_layer"]
+      source_address_prefix    = module.subnets.subnet_cidrs["web_layer"]
       destination_address_prefix = "*"
     },
     {
@@ -132,7 +132,7 @@ module "app_nsg" {
       source_port_range        = "*"
       destination_port_range   = "3306"
       source_address_prefix    = "*"
-      destination_address_prefix = module.subnets.subnet_ids["db_layer"]
+      destination_address_prefix = module.subnets.subnet_cidrs["db_layer"]
     }
     # AKS will add its own rules, ensure no conflict
   ]
