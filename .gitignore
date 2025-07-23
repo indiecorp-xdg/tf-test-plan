@@ -3,13 +3,15 @@
 *.tfplan                        # Terraform plan files (can contain sensitive info)
 *.tfstate                       # Terraform state files (HIGHLY SENSITIVE - NEVER COMMIT TO GIT!)
 *.tfstate.backup                # Terraform state backup files
-.terraform.lock.hcl             # Terraform dependency lock file (often committed, but can be ignored if not strictly managed)
+*.tfstate.*
+#.terraform.lock.hcl             # Terraform dependency lock file (often committed, but can be ignored if not strictly managed)
 # If you decide to ignore .terraform.lock.hcl, uncomment the line below:
 # .terraform.lock.hcl
 
 # Terraform CLI configuration and crash logs
 .terraformrc                    # Personal Terraform CLI configuration (may contain sensitive tokens)
 crash.log                       # Terraform crash logs
+crash.*.log
 
 # Cloud-specific credential files and sensitive data (ABSOLUTELY CRITICAL TO IGNORE)
 # These files should NEVER be committed to version control.
@@ -29,10 +31,21 @@ token.json
 # Sensitive variable files
 # If you use .tfvars files for sensitive variables, explicitly ignore them.
 # Example: `terraform apply -var-file=secret.tfvars`
-*.tfvars                        # Generic .tfvars (if they contain sensitive data)
+*.tfvars.*                        # Generic .tfvars (if they contain sensitive data)
 *.auto.tfvars                   # Auto-loaded .tfvars (if they contain sensitive data)
 secret.tfvars                   # Common name for sensitive variables
 sensitive.tfvars                # Another common name for sensitive variables
+# Exclude all .tfvars files, which are likely to contain sensitive data
+*.tfvars
+*.tfvars.json
+
+# Ignore override files as they are usually used to override resources locally
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
 
 # Environment variable files
 .env                            # Common for local environment variables
@@ -42,6 +55,7 @@ sensitive.tfvars                # Another common name for sensitive variables
 .idea/                          # IntelliJ IDEA project files
 .vscode/                        # VS Code project files (can be committed if shared settings are desired)
 *.swp                           # Vim swap files
+*.swo
 *~                              # Backup files created by some text editors
 *.sublime-workspace             # Sublime Text workspace files
 *.sublime-project               # Sublime Text project files
