@@ -1,4 +1,3 @@
-# Dynamically create subnets based on the 'subnets' input map
 resource "azurerm_subnet" "main" {
   for_each             = var.subnets
   name                 = each.value.name
