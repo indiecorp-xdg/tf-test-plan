@@ -8,11 +8,7 @@ output "subnet_names" {
   value       = { for name, subnet in azurerm_subnet.main : name => subnet.name }
 }
 
-output "subnet_cidrs" {
-  description = "A map of subnet names to their CIDR prefixes."
-  value = {
-    web_layer = azurerm_subnet.web.address_prefixes[0]
-    app_layer = azurerm_subnet.app.address_prefixes[0]
-    db_layer  = azurerm_subnet.db.address_prefixes[0]
-  }
+output "subnet_address_prefixes" {
+  description = "A map of the created subnet address prefixes (CIDR blocks)."
+  value       = { for name, subnet in azurerm_subnet.main : name => subnet.address_prefixes[0] }
 }
