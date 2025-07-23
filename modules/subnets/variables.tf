@@ -21,6 +21,5 @@ variable "subnets" {
         actions = optional(list(string), [])
       })
     })), [])
-    # delegation           = optional(list(string), [])
   }))
 }

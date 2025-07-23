@@ -1,6 +1,6 @@
 module "resource_group" {
-  source = "../../modules/resource_group" 
-  name   = "tf-labs-rg"                   
+  source   = "../../modules/resource_group"
+  name     = "tf-labs-rg"
   location = "South Africa North"
   tags = {
     environment = "Dev"
@@ -24,7 +24,7 @@ module "subnets" {
   source              = "../../modules/subnets"
   resource_group_name = module.resource_group.name
   vnet_name           = module.network.vnet_name
-    subnets = {
+  subnets = {
     web_layer = {
       name             = "web-subnet"
       address_prefixes = ["10.0.1.0/24"]
@@ -41,10 +41,14 @@ module "subnets" {
       # This subnet is for Private Endpoint, requires specific delegation
       service_endpoints = ["Microsoft.Storage", "Microsoft.Sql"] # Example for Private Endpoint needs
       delegations = [{
-        name               = "microsoft-sql-delegation"
+        name = "microsoft-sql-delegation"
         service_delegation = {
-          name = "Microsoft.Sql/servers"
-          # actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"] # Optional, depends on exact scenario
+          name = "Microsoft.Sql/managedInstances"
+          actions = [
+            "Microsoft.Network/virtualNetworks/subnets/join/action",
+            "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action",
+            "Microsoft.Network/virtualNetworks/subnets/unprepareNetworkPolicies/action"
+          ] # Optional, depends on exact scenario
         }
       }]
     },
