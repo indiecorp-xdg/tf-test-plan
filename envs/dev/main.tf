@@ -15,9 +15,7 @@ module "network" {
   vnet_name           = "tf-3tier-vnet"
   vnet_address_space  = ["10.0.0.0/16"]
   dns_servers         = []
-
-
-
+  tags                = module.resource_group.tags
 }
 
 module "subnets" {
@@ -37,7 +35,7 @@ module "subnets" {
     },
     db_layer = {
       name             = "db-subnet"
-      address_prefixes = ["10.0.3.0/24"]
+      address_prefixes = ["10.0.3.0/27"]
       # This subnet is for Private Endpoint, requires specific delegation
       service_endpoints = ["Microsoft.Sql"]
       # service_endpoints = ["Microsoft.Storage", "Microsoft.Sql"] # Example for Private Endpoint needs
@@ -66,39 +64,39 @@ module "web_nsg" {
   name                = "tf-web-nsg"
   location            = module.resource_group.location
   resource_group_name = module.resource_group.name
-  # Rules for Web Layer: 22, 80, 443 inbound
+  tags                = module.resource_group.tags
   security_rules = [
     {
-      name                     = "AllowSSH"
-      priority                 = 100
-      direction                = "Inbound"
-      access                   = "Allow"
-      protocol                 = "Tcp"
-      source_port_range        = "*"
-      destination_port_range   = "22"
-      source_address_prefix    = "Internet" # Or specific trusted IPs
+      name                       = "AllowSSH"
+      priority                   = 100
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_range     = "22"
+      source_address_prefix      = "Internet" # Or specific trusted IPs
       destination_address_prefix = "*"
     },
     {
-      name                     = "AllowHTTP"
-      priority                 = 110
-      direction                = "Inbound"
-      access                   = "Allow"
-      protocol                 = "Tcp"
-      source_port_range        = "*"
-      destination_port_range   = "80"
-      source_address_prefix    = "Internet"
+      name                       = "AllowHTTP"
+      priority                   = 110
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_range     = "80"
+      source_address_prefix      = "Internet"
       destination_address_prefix = "*"
     },
     {
-      name                     = "AllowHTTPS"
-      priority                 = 120
-      direction                = "Inbound"
-      access                   = "Allow"
-      protocol                 = "Tcp"
-      source_port_range        = "*"
-      destination_port_range   = "443"
-      source_address_prefix    = "Internet"
+      name                       = "AllowHTTPS"
+      priority                   = 120
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_range     = "443"
+      source_address_prefix      = "Internet"
       destination_address_prefix = "*"
     }
     # Add rules for internal communication (e.g., to App Layer)
@@ -110,51 +108,152 @@ module "app_nsg" {
   name                = "tf-app-nsg"
   location            = module.resource_group.location
   resource_group_name = module.resource_group.name
+  tags                = module.resource_group.tags
   # Rules for App Layer (AKS): Internal traffic
   security_rules = [
     {
-      name                     = "AllowInboundFromWeb"
-      priority                 = 100
-      direction                = "Inbound"
-      access                   = "Allow"
-      protocol                 = "Tcp"
-      source_port_range        = "*"
-      destination_port_range   = "8080"
-      source_address_prefix    = module.subnets.subnet_address_prefixes["web_layer"]
+      name                       = "AllowInboundFromWeb"
+      priority                   = 100
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_range     = "8080"
+      source_address_prefix      = module.subnets.subnet_address_prefixes["web_layer"]
       destination_address_prefix = "*"
     },
     {
-      name                     = "AllowOutboundToDB"
-      priority                 = 100
-      direction                = "Outbound"
-      access                   = "Allow"
-      protocol                 = "Tcp"
-      source_port_range        = "*"
-      destination_port_range   = "3306"
-      source_address_prefix    = "*"
+      name                       = "AllowOutboundToDB"
+      priority                   = 100
+      direction                  = "Outbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_range     = "3306"
+      source_address_prefix      = "*"
       destination_address_prefix = module.subnets.subnet_address_prefixes["db_layer"]
     }
     # AKS will add its own rules, ensure no conflict
   ]
 }
 
+# module "db_nsg" {
+#   source              = "../../modules/nsg"
+#   name                = "tf-db-nsg"
+#   location            = module.resource_group.location
+#   resource_group_name = module.resource_group.name
+#   security_rules = [
+#     {
+#       name                       = "AllowPrivateEndpointAccess"
+#       priority                   = 100
+#       direction                  = "Inbound"
+#       access                     = "Allow"
+#       protocol                   = "Tcp"
+#       source_port_range          = "*"
+#       destination_port_range     = "3306"
+#       source_address_prefix      = "VirtualNetwork"
+#       destination_address_prefix = "*"
+#     }
+#   ]
+# }
+
+
 module "db_nsg" {
   source              = "../../modules/nsg"
   name                = "tf-db-nsg"
   location            = module.resource_group.location
   resource_group_name = module.resource_group.name
+  tags                = module.resource_group.tags
+
   security_rules = [
     {
-      name                     = "AllowPrivateEndpointAccess"
-      priority                 = 100
-      direction                = "Inbound"
-      access                   = "Allow"
-      protocol                 = "Tcp"
-      source_port_range        = "*"
-      destination_port_range   = "3306"
-      source_address_prefix    = "VirtualNetwork"
+      name                       = "allow_management_inbound"
+      priority                   = 106
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_ranges    = ["9000", "9003", "1438", "1440", "1452"]
+      source_address_prefix      = "*"
       destination_address_prefix = "*"
-    }
+    },
+    {
+      name                       = "allow_misubnet_inbound"
+      priority                   = 200
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*" # Use destination_port_range for single port or all ports
+      source_address_prefix      = module.subnets.subnet_address_prefixes["db_layer"]
+      destination_address_prefix = "*"
+    },
+    {
+      name                       = "allow_health_probe_inbound"
+      priority                   = 300
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "AzureLoadBalancer"
+      destination_address_prefix = "*"
+    },
+    {
+      name                       = "allow_tds_inbound"
+      priority                   = 1000
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_range     = "1433"
+      source_address_prefix      = "VirtualNetwork"
+      destination_address_prefix = "*"
+    },
+    {
+      name                       = "deny_all_inbound"
+      priority                   = 4096
+      direction                  = "Inbound"
+      access                     = "Deny"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "*"
+      destination_address_prefix = "*"
+    },
+    {
+      name                       = "allow_management_outbound"
+      priority                   = 102
+      direction                  = "Outbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_ranges    = ["80", "443", "12000"]
+      source_address_prefix      = "*"
+      destination_address_prefix = "*"
+    },
+    {
+      name                       = "allow_misubnet_outbound"
+      priority                   = 200
+      direction                  = "Outbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = module.subnets.subnet_address_prefixes["db_layer"]
+      destination_address_prefix = "*"
+    },
+    {
+      name                       = "deny_all_outbound"
+      priority                   = 4096
+      direction                  = "Outbound"
+      access                     = "Deny"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "*"
+      destination_address_prefix = "*"
+    },
   ]
 }
 
@@ -171,4 +270,37 @@ resource "azurerm_subnet_network_security_group_association" "app_nsg_associatio
 resource "azurerm_subnet_network_security_group_association" "db_nsg_association" {
   subnet_id                 = module.subnets.subnet_ids["db_layer"]
   network_security_group_id = module.db_nsg.nsg_id
+}
+
+module "db_route_table" {
+  source                        = "../../modules/route_table"
+  route_table_name              = "db-route-table"
+  location                      = module.resource_group.location
+  resource_group_name           = module.resource_group.name
+  bgp_route_propagation_enabled = true
+
+  route_definitions = []
+  tags              = module.resource_group.tags
+}
+
+
+
+
+resource "azurerm_subnet_route_table_association" "db_route_table_association" {
+  subnet_id      = module.subnets.subnet_ids["db_layer"]
+  route_table_id = module.db_route_table.route_table_id
+}
+
+module "sql_managed_instance" {
+  source              = "../../modules/sql_managed_instance"
+  sql_mi_name         = "tf3managedsqlinstance"
+  resource_group_name = module.resource_group.name
+  location            = module.resource_group.location
+  subnet_id           = module.subnets.subnet_ids["db_layer"]
+  vnet_id             = module.network.vnet_id
+
+  administrator_login          = "sqladmin"
+  administrator_login_password = var.sql_mi_admin_password
+
+  tags = module.resource_group.tags
 }
