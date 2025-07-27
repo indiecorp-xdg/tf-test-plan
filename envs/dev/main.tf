@@ -1,7 +1,8 @@
 module "resource_group" {
   source   = "../../modules/resource_group"
   name     = "tf-labs-rg"
-  location = "South Africa North"
+  # location = "South Africa North"
+  location = "West US 2"
   tags = {
     environment = "Dev"
     project     = "tf-labs-3TierApp"
@@ -295,8 +296,8 @@ module "sql_managed_instance" {
   source              = "../../modules/sql_managed_instance"
   sql_mi_name         = "tf3managedsqlinstance"
   resource_group_name = module.resource_group.name
-  # location            = module.resource_group.location
-  location            = "West US 2"
+  location            = module.resource_group.location
+  # location            = "West US 2"
   subnet_id           = module.subnets.subnet_ids["db_layer"]
   vnet_id             = module.network.vnet_id
 
