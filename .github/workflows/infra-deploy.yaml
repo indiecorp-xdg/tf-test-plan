@@ -55,11 +55,11 @@ jobs:
           cd envs/dev
           terraform plan \
             -var="azure_tenant_id=${{ env.ARM_TENANT_ID }}"  \
-            -var="sql_mi_admin_password=${{ secrets.AZURE_SQL_MI_ADMIN_PASSWORD }}"
+            -var="administrator_login_password=${{ secrets.AZURE_SQL_MI_ADMIN_PASSWORD }}"
 
       - name: "Terraform Apply"
         run: |
           cd envs/dev
           terraform apply -auto-approve \
             -var="azure_tenant_id=${{ env.ARM_TENANT_ID }}"  \
-            -var="sql_mi_admin_password=${{ secrets.AZURE_SQL_MI_ADMIN_PASSWORD }}"
+            -var="administrator_login_password=${{ secrets.AZURE_SQL_MI_ADMIN_PASSWORD }}"

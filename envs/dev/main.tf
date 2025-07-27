@@ -300,7 +300,7 @@ module "sql_managed_instance" {
   vnet_id             = module.network.vnet_id
 
   administrator_login          = "sqladmin"
-  administrator_login_password = var.sql_mi_admin_password
+  administrator_login_password = var.administrator_login_password
 
   tags = module.resource_group.tags
 }
