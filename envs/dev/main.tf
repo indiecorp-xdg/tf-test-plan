@@ -295,7 +295,8 @@ module "sql_managed_instance" {
   source              = "../../modules/sql_managed_instance"
   sql_mi_name         = "tf3managedsqlinstance"
   resource_group_name = module.resource_group.name
-  location            = module.resource_group.location
+  # location            = module.resource_group.location
+  location            = "West US 2"
   subnet_id           = module.subnets.subnet_ids["db_layer"]
   vnet_id             = module.network.vnet_id
 

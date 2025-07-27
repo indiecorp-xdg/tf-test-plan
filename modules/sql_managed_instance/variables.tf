@@ -40,7 +40,7 @@ variable "sku_name" {
 variable "vcores" {
   description = "The number of vCores for the SQL Managed Instance."
   type        = number
-  default     = 4
+  default     = 8
 }
 
 variable "storage_gb" {
