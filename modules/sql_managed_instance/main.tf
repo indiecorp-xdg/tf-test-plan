@@ -65,7 +65,8 @@ resource "azurerm_private_endpoint" "sql_mi_pe" {
     name                           = "${var.sql_mi_name}-psc"
     is_manual_connection           = false
     private_connection_resource_id = azurerm_mssql_managed_instance.main.id
-    subresource_names              = ["sqlManagedInstance"]
+    # subresource_names              = ["sqlManagedInstance"]
+    subresource_names              = ["managedInstance"]
   }
 
   private_dns_zone_group {
