@@ -39,18 +39,18 @@ module "subnets" {
       address_prefixes = ["10.0.3.0/27"]
       # This subnet is for Private Endpoint, requires specific delegation
       service_endpoints = ["Microsoft.Sql"]
-      # service_endpoints = ["Microsoft.Storage", "Microsoft.Sql"] # Example for Private Endpoint needs
-    #   delegations = [{
-    #     name = "managedSQLinstancedelegation"
-    #     service_delegation = {
-    #       name = "Microsoft.Sql/managedInstances"
-    #       actions = [
-    #         "Microsoft.Network/virtualNetworks/subnets/join/action",
-    #         "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action",
-    #         "Microsoft.Network/virtualNetworks/subnets/unprepareNetworkPolicies/action"
-    #       ]
-    #     }
-    #   }]
+      service_endpoints = ["Microsoft.Storage", "Microsoft.Sql"] # Example for Private Endpoint needs
+      delegations = [{
+        name = "managedSQLinstancedelegation"
+        service_delegation = {
+          name = "Microsoft.Sql/managedInstances"
+          actions = [
+            "Microsoft.Network/virtualNetworks/subnets/join/action",
+            "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action",
+            "Microsoft.Network/virtualNetworks/subnets/unprepareNetworkPolicies/action"
+          ]
+        }
+      }]
     },
     aks_subnet = {
       name             = "aks-subnet"
