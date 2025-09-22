@@ -53,9 +53,16 @@ jobs:
             -var="azure_tenant_id=${{ env.ARM_TENANT_ID }}"  \
             -var="administrator_login_password=${{ secrets.AZURE_SQL_MI_ADMIN_PASSWORD }}"
 
-      - name: "Terraform Apply"
+      # - name: "Terraform Apply"
+      #   run: |
+      #     cd envs/dev
+      #     terraform apply -auto-approve \
+      #       -var="azure_tenant_id=${{ env.ARM_TENANT_ID }}"  \
+      #       -var="administrator_login_password=${{ secrets.AZURE_SQL_MI_ADMIN_PASSWORD }}"
+
+      - name: "Terraform Delete"
         run: |
           cd envs/dev
-          terraform apply -auto-approve \
+          terraform delete -auto-approve \
             -var="azure_tenant_id=${{ env.ARM_TENANT_ID }}"  \
             -var="administrator_login_password=${{ secrets.AZURE_SQL_MI_ADMIN_PASSWORD }}"
