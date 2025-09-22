@@ -63,6 +63,6 @@ jobs:
       - name: "Terraform Delete"
         run: |
           cd envs/dev
-          terraform delete -auto-approve \
+          terraform destroy -auto-approve \
             -var="azure_tenant_id=${{ env.ARM_TENANT_ID }}"  \
             -var="administrator_login_password=${{ secrets.AZURE_SQL_MI_ADMIN_PASSWORD }}"
